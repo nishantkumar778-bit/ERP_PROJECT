@@ -1,12 +1,18 @@
+import os
 from jose import jwt
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
-SECRET_KEY = "secret123"
-ALGORITHM = "HS256"
+load_dotenv()
 
-def create_token(data):
-    data["exp"] = datetime.utcnow() + timedelta(hours=3)
-    return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_HOURS = int(os.getenv("ACCESS_TOKEN_EXPIRE_HOURS"))
 
-def decode_token(token):
+def create_token(data: dict):
+    payload = data.copy()
+    payload["exp"] = datetime.utcnow() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+def decode_token(token: str):
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
