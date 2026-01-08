@@ -34,3 +34,11 @@ class LeaveOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class NotificationOut(BaseModel):
+    id: int
+    message: str
+    is_read: bool
+
+    class Config:
+        orm_mode = True

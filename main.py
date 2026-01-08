@@ -91,3 +91,14 @@ def change_password(new_password: str, current_user: models.User = Depends(depen
 @app.post("/user/apply_leave", response_model=schemas.LeaveOut)
 def user_apply_leave(current_user: models.User = Depends(dependencies.get_current_user), db: Session = Depends(database.get_db)):
     return crud.apply_leave(db, current_user)
+@app.get("/user/notifications")
+def get_notifications(
+    current_user: models.User = Depends(dependencies.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    return (
+        db.query(models.Notification)
+        .filter(models.Notification.user_id == current_user.id)
+        .order_by(models.Notification.id.desc())
+        .all()
+    )
